@@ -60,7 +60,7 @@ internal static class Program
             c.ForLogger().FilterMinLevel(LogLevel.Info).WriteToConsole().WithAsync();
             using var fileTarget = new FileTarget
             {
-                FileName = "SFP.log",
+                FileName = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/sfp/sfp.log",
                 ArchiveOldFileOnStartup = true,
                 OpenFileCacheTimeout = 30,
                 MaxArchiveFiles = 2,
@@ -114,7 +114,10 @@ internal static class Program
 
     private static void InitSettings()
     {
-        PortableJsonSettingsProvider.SettingsFileName = "SFP.config";
+        string configPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "sfp");
+        Directory.CreateDirectory(configPath);
+
+        PortableJsonSettingsProvider.SettingsFileName = $"{configPath}/config.json";
         PortableJsonSettingsProvider.ApplyProvider(Settings.Default);
         Settings.Default.Reload();
         Settings.Default.DummySetting = true;
